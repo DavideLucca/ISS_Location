@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <style>
+        #mapid {
+            height: 500px;
+        }
+    </style>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"
+        integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+        crossorigin="" />
+
+    <!-- Make sure you put this AFTER Leaflet's CSS -->
+    <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"
+        integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="
+        crossorigin=""></script>
+    <title>ISS Location</title>
+</head>
+
+<body>
+
+    <h1 style="padding-bottom: 20px;">International Space Station Current Location</h1>
+
+    <div id="mapid"></div>
+
+    <h3>Latitude: <span id="lat"></span></h3>
+    <h3>Longitude: <span id="lon"></span></h3>
+
+
+
+    <button onclick="onReload()">Reload</button>
+
+    <script>
+
+        const mymap = L.map('mapid').setView([0, 0], 2);
+
+        const myIcon = L.icon({
+            iconUrl: 'International_Space_Station.svg.png',
+            iconSize: [100, 64],
+            iconAnchor: [25, 16],
+        });
+
+        const marker = L.marker([0, 0], { icon: myIcon }).addTo(mymap);
+
+        const attribution = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
+
+        const tilesURL = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+        const tiles = L.tileLayer(tilesURL, { attribution });
+        tiles.addTo(mymap);
+
+        const ISS_apiURL = 'http://api.open-notify.org/iss-now.json';
+
+        async function getISS() {
+            const response = await fetch(ISS_apiURL);
+            const data = await response.json();
+            // console.log(data);
+            console.log('Latitude', data.iss_position.latitude);
+            console.log('Longitude', data.iss_position.longitude);
+
+            // L.marker([data.iss_position.latitude, data.iss_position.longitude]).addTo(mymap);
+            marker.setLatLng([data.iss_position.latitude, data.iss_position.longitude]);
+
+            document.getElementById('lat').textContent = data.iss_position.latitude;
+            document.getElementById('lon').textContent = data.iss_position.longitude;
+        }
+
+        getISS();
+
+        function onReload() {
+            location.reload();
+        }
+
+    </script>
+</body>
+
+</html>

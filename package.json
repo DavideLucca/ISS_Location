@@ -1,0 +1,11 @@
+{
+  "name": "iss_location",
+  "version": "1.0.0",
+  "description": "ISS Location",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Davi de Lucca",
+  "license": "ISC"
+}
